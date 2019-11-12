@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/phinexdaz/ipapk-server/conf"
-	"github.com/phinexdaz/ipapk-server/middleware"
-	"github.com/phinexdaz/ipapk-server/models"
-	"github.com/phinexdaz/ipapk-server/templates"
-	"github.com/phinexdaz/ipapk-server/utils"
+	"github.com/xvwvx/ipapk-server/conf"
+	"github.com/xvwvx/ipapk-server/middleware"
+	"github.com/xvwvx/ipapk-server/models"
+	"github.com/xvwvx/ipapk-server/templates"
+	"github.com/xvwvx/ipapk-server/utils"
 	"log"
 	"net/http"
 	"os"
@@ -46,6 +46,8 @@ func main() {
 	router.StaticFile("myCA.cer", ".ca/myCA.cer")
 
 	router.POST("/upload", middleware.Upload)
+	router.GET("/del/:uuid", middleware.DelBundle)
+	router.GET("/bundleId/:bundle_id", middleware.GetBundleId)
 	router.GET("/bundle/:uuid", middleware.GetBundle)
 	router.GET("/log/:uuid", middleware.GetChangelog)
 	router.GET("/qrcode/:uuid", middleware.GetQRCode)
@@ -62,9 +64,12 @@ func main() {
 	}
 
 	go func() {
-		if err := srv.ListenAndServeTLS(".ca/mycert1.cer", ".ca/mycert1.key"); err != nil {
+		if err := srv.ListenAndServe(); err != nil {
 			log.Printf("listen: %v\n", err)
 		}
+		//if err := srv.ListenAndServeTLS(".ca/mycert1.cer", ".ca/mycert1.key"); err != nil {
+		//	log.Printf("listen: %v\n", err)
+		//}
 	}()
 
 	quit := make(chan os.Signal)

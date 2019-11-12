@@ -55,9 +55,9 @@ func (ext BundleFileExtension) PlatformType() BundlePlatformType {
 func (platformType BundlePlatformType) String() string {
 	var out string
 	if platformType == BundlePlatformTypeAndroid {
-		out = "android"
+		out = "Android"
 	} else if platformType == BundlePlatformTypeIOS {
-		out = "ios"
+		out = "iOS"
 	}
 	return out
 }
@@ -79,6 +79,18 @@ type Bundle struct {
 
 func AddBundle(bundle *Bundle) error {
 	return orm.Create(bundle).Error
+}
+
+func (bundle *Bundle) DeleteBundle() error {
+	err := orm.Delete(bundle).Error
+	return err
+}
+
+func GetBundleByBundleId(bundleId string) (*Bundle, error) {
+	var bundle Bundle
+
+	err := orm.Where("bundle_id = ?", bundleId).Find(&bundle).Error
+	return &bundle, err
 }
 
 func GetBundleByUID(uuid string) (*Bundle, error) {

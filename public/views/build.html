@@ -14,23 +14,47 @@
         <div class="weui-cells__title">历史版本</div>
         <div class="weui-cells">
             {{ range .builds }}
-            <div class="weui-cell">
-                <div class="weui-cell__hd">
-                    <img src="{{ .IconUrl }}">
-                </div>
+
+            <div class="weui-cell weui-cell_swiped" id="{{ .UUID }}">
                 <div class="weui-cell__bd">
-                    <p>{{ .Version }} ({{ .Build }})</p>
+                    <div class="weui-cell">
+                        <div class="weui-cell__hd">
+                            <img src="{{ .IconUrl }}">
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p>{{ .Version }} ({{ .Build }})</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <a href="{{ .InstallUrl | safeURL }}" class="weui-btn weui-btn_mini weui-btn_primary">安装</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="weui-cell__ft">
-                    <a href="{{ .InstallUrl | safeURL }}" class="weui-btn weui-btn_mini weui-btn_primary">安装</a>
+                    <a class="weui-swiped-btn weui-swiped-btn_warn delete-swipeout" onclick="del({{ .UUID }})">删除</a>
                 </div>
             </div>
             {{ end }}
         </div>
-        <div class="weui-footer weui-footer_fixed-bottom">
-            <p class="weui-footer__text">Copyright &copy; ipapk |<a href="/myCA.cer" class="weui-footer__link">安装证书</a></p>
-        </div>
     </div>
 </div>
+<script src="//jqweui.com/dist/lib/fastclick.js"></script>
+<script src="//jqweui.com/dist/lib/jquery-2.1.4.js"></script>
+<script>
+    function del(uuid) {
+        $.ajax({
+            method : "GET",
+            url: '/del/' + uuid,
+            timeout: 5000,
+            success: function (data) {
+                var element = document.getElementById(uuid);
+                element.parentNode.removeChild(element);
+            },
+            error: function (error) {
+                alert(error.responseJSON.msg)
+            }
+        })
+    }
+</script>
+<script src="//jqweui.com/dist/js/jquery-weui.js"></script>
 </body>
 </html>

@@ -7,12 +7,13 @@ import (
 	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	"github.com/phinexdaz/ipapk"
-	"github.com/phinexdaz/ipapk-server/conf"
-	"github.com/phinexdaz/ipapk-server/models"
-	"github.com/phinexdaz/ipapk-server/serializers"
 	"github.com/satori/go.uuid"
+	"github.com/xvwvx/ipapk-server/conf"
+	"github.com/xvwvx/ipapk-server/models"
+	"github.com/xvwvx/ipapk-server/serializers"
 	"image/png"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -76,6 +77,39 @@ func Upload(c *gin.Context) {
 	})
 }
 
+func DelBundle(c *gin.Context) {
+	_uuid := c.Param("uuid")
+
+	bundle, err := models.GetBundleByUID(_uuid)
+	if err != nil {
+		c.JSON(404, map[string]string{
+			"msg": "未找到bundle",
+		})
+		return
+	}
+
+	filename := filepath.Join(".data", _uuid+string(bundle.PlatformType.Extention()))
+	err = os.Remove(filename)
+	if err != nil {
+		c.JSON(404, map[string]string{
+			"msg": "删除文件错误",
+		})
+		return
+	}
+
+	err = bundle.DeleteBundle()
+	if err != nil {
+		c.JSON(404, map[string]string{
+			"msg": "删除数据错误",
+		})
+		return
+	}
+
+	c.JSON(200, map[string]string{
+		"msg": "已删除",
+	})
+}
+
 func GetQRCode(c *gin.Context) {
 	_uuid := c.Param("uuid")
 
@@ -123,6 +157,22 @@ func GetChangelog(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "change.html", gin.H{
 		"changelog": bundle.ChangeLog,
+	})
+}
+
+func GetBundleId(c *gin.Context) {
+	_bundleId := c.Param("bundle_id")
+
+	bundle, err := models.GetBundleByBundleId(_bundleId)
+	if err != nil {
+		return
+	}
+
+	c.HTML(http.StatusOK, "index.html", gin.H{
+		"bundle":     bundle,
+		"installUrl": bundle.GetInstallUrl(conf.AppConfig.ProxyURL()),
+		"qrCodeUrl":  conf.AppConfig.ProxyURL() + "/qrcode/" + bundle.UUID,
+		"iconUrl":    conf.AppConfig.ProxyURL() + "/icon/" + bundle.UUID,
 	})
 }
 

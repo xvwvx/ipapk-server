@@ -56,14 +56,14 @@
         </div>
         <div class="page__bd page__bd_spacing">
             <a href="{{ .installUrl | safeURL }}" class="weui-btn weui-btn_primary">在线安装</a>
-            <!--<div class="weui-loadmore weui-loadmore_line">-->
-                <!--<span class="weui-loadmore__tips">或扫一扫</span>-->
-            <!--</div>-->
-            <!--<div class="qr-wrapper">-->
-                <!--<div class="qr">-->
-                    <!--<img src="{{ .qrCodeUrl }}">-->
-                <!--</div>-->
-            <!--</div>-->
+            <div class="weui-loadmore weui-loadmore_line">
+                <span class="weui-loadmore__tips">或扫一扫</span>
+            </div>
+            <div class="qr-wrapper">
+                <div class="qr">
+                    <img src="{{ .qrCodeUrl }}">
+                </div>
+            </div>
         </div>
         <div class="weui-footer weui-footer_fixed-bottom">
             <p class="weui-footer__text">Copyright &copy; ipapk |<a href="/myCA.cer" class="weui-footer__link">安装证书</a></p>

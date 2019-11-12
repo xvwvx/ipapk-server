@@ -3,7 +3,7 @@ package conf
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/phinexdaz/ipapk-server/utils"
+	"github.com/xvwvx/ipapk-server/utils"
 	"io/ioutil"
 )
 
