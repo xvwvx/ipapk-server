@@ -2,9 +2,8 @@ package models
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/xvwvx/ipapk-server/conf"
 )
 

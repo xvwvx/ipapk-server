@@ -14,6 +14,11 @@ type Config struct {
 	Port     string `json:"port"`
 	Proxy    string `json:"proxy"`
 	Database string `json:"database"`
+	IsUseAliyun bool `json:"isUseAliyun"`
+	AccessID  string `json:"accessID"`
+	AccessSecret  string `json:"accessSecret"`
+	Bucket string `json:"bucket"`
+	Visit string `json:"visit"`
 }
 
 func InitConfig(filename string) error {
@@ -41,4 +46,11 @@ func (c *Config) ProxyURL() string {
 		return fmt.Sprintf("https://%v:%v", localIp.String(), c.Port)
 	}
 	return c.Proxy
+}
+
+func (c *Config) VisitURL() string {
+	if c.IsUseAliyun {
+		return c.Visit
+	}
+	return c.ProxyURL()
 }

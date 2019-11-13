@@ -42,6 +42,11 @@ func Upload(c *gin.Context) {
 		return
 	}
 
+	if conf.AppConfig.IsUseAliyun {
+		models.OSSPutObjectFromFile(_uuid+string(ext.PlatformType().Extention()), filename)
+		os.Remove(filename)
+	}
+
 	iconBuffer := new(bytes.Buffer)
 	if err := png.Encode(iconBuffer, app.Icon); err != nil {
 		return
@@ -88,8 +93,12 @@ func DelBundle(c *gin.Context) {
 		return
 	}
 
-	filename := filepath.Join(".data", _uuid+string(bundle.PlatformType.Extention()))
-	err = os.Remove(filename)
+	if conf.AppConfig.IsUseAliyun {
+		err = models.OSSDelFile(_uuid+string(bundle.PlatformType.Extention()))
+	} else {
+		filename := filepath.Join(".data", _uuid+string(bundle.PlatformType.Extention()))
+		err = os.Remove(filename)
+	}
 	if err != nil {
 		c.JSON(404, map[string]string{
 			"msg": "删除文件错误",
@@ -279,6 +288,6 @@ func DownloadAPP(c *gin.Context) {
 
 	bundle.UpdateDownload()
 
-	downloadUrl := conf.AppConfig.ProxyURL() + "/app/" + bundle.UUID + string(bundle.PlatformType.Extention())
+	downloadUrl := conf.AppConfig.VisitURL() + "/ipapk/" + bundle.UUID + string(bundle.PlatformType.Extention())
 	c.Redirect(http.StatusMovedPermanently, downloadUrl)
 }

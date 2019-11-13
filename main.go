@@ -32,6 +32,12 @@ func Init() {
 	if err := models.InitDB(); err != nil {
 		log.Fatal(err)
 	}
+
+	if conf.AppConfig.IsUseAliyun {
+		if err := models.InitOSS(); err != nil {
+			log.Fatal(err)
+		}
+	}
 }
 
 func main() {
@@ -41,7 +47,7 @@ func main() {
 	router.SetFuncMap(templates.TplFuncMap)
 	router.LoadHTMLGlob("public/views/*")
 
-	router.Static("app", ".data")
+	router.Static("ipapk", ".data")
 	router.Static("static", "public/static")
 	router.StaticFile("myCA.cer", ".ca/myCA.cer")
 
