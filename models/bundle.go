@@ -86,10 +86,20 @@ func (bundle *Bundle) DeleteBundle() error {
 	return err
 }
 
-func GetBundleByBundleId(bundleId string) (*Bundle, error) {
+func GetBundleByBundleId(bundleId, platform string) (*Bundle, error) {
 	var bundle Bundle
 
-	err := orm.Where("bundle_id = ?", bundleId).Find(&bundle).Error
+	if platform == "" {
+		err := orm.Where("bundle_id = ?", bundleId).Find(&bundle).Error
+		return &bundle, err
+	}
+
+	platformType := BundlePlatformTypeIOS
+	if platform == "Android" {
+		platformType = BundlePlatformTypeAndroid
+	}
+
+	err := orm.Where("bundle_id = ? AND platform_type= ?", bundleId, int(platformType)).Find(&bundle).Error
 	return &bundle, err
 }
 

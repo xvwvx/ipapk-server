@@ -170,9 +170,10 @@ func GetChangelog(c *gin.Context) {
 }
 
 func GetBundleId(c *gin.Context) {
+	_platform := c.Query("platform")
 	_bundleId := c.Param("bundle_id")
 
-	bundle, err := models.GetBundleByBundleId(_bundleId)
+	bundle, err := models.GetBundleByBundleId(_bundleId, _platform)
 	if err != nil {
 		return
 	}
