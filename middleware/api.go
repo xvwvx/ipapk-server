@@ -224,6 +224,7 @@ func GetVersions(c *gin.Context) {
 func GetBuilds(c *gin.Context) {
 	_uuid := c.Param("uuid")
 	version := c.Param("ver")
+	isEdit := c.Query("password") == conf.AppConfig.Password
 
 	bundle, err := models.GetBundleByUID(_uuid)
 	if err != nil {
@@ -253,6 +254,7 @@ func GetBuilds(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "build.html", gin.H{
+		"isEdit": isEdit,
 		"builds": bundles,
 	})
 }

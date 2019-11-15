@@ -19,6 +19,7 @@ type Config struct {
 	AccessSecret  string `json:"accessSecret"`
 	Bucket string `json:"bucket"`
 	Visit string `json:"visit"`
+	Password string `json:"password"`
 }
 
 func InitConfig(filename string) error {
