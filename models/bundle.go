@@ -90,7 +90,8 @@ func GetBundleByBundleId(bundleId, platform string) (*Bundle, error) {
 	var bundle Bundle
 
 	if platform == "" {
-		err := orm.Where("bundle_id = ?", bundleId).Find(&bundle).Error
+		err := orm.Where("bundle_id = ?", bundleId).
+			Order("created_at DESC").Limit(1).Find(&bundle).Error
 		return &bundle, err
 	}
 
@@ -99,14 +100,15 @@ func GetBundleByBundleId(bundleId, platform string) (*Bundle, error) {
 		platformType = BundlePlatformTypeAndroid
 	}
 
-	err := orm.Where("bundle_id = ? AND platform_type= ?", bundleId, int(platformType)).Find(&bundle).Error
+	err := orm.Where("bundle_id = ? AND platform_type= ?", bundleId, int(platformType)).
+		Order("created_at DESC").Limit(1).Find(&bundle).Error
 	return &bundle, err
 }
 
 func GetBundleByUID(uuid string) (*Bundle, error) {
 	var bundle Bundle
 
-	err := orm.Where("uuid = ?", uuid).Find(&bundle).Error
+	err := orm.Where("uuid = ?", uuid).Find(&bundle).Limit(1).Error
 	return &bundle, err
 }
 
@@ -159,7 +161,7 @@ func (bundle *Bundle) GetVersions() (VersionInfo, error) {
 func (bundle *Bundle) GetBuilds(version string) ([]*Bundle, error) {
 	var bundles []*Bundle
 	err := orm.Where("bundle_id = ? AND version = ? AND platform_type = ?", bundle.BundleId, version, int(bundle.PlatformType)).
-		Group("build").Order("build DESC").Find(&bundles).Error
+		Order("created_at DESC").Find(&bundles).Error
 
 	return bundles, err
 }
