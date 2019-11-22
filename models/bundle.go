@@ -103,7 +103,7 @@ func GetBundleByBundleId(bundleId, platform string) (*Bundle, error) {
 	}
 
 	platformType := BundlePlatformTypeIOS
-	if platform == "Android" {
+	if platform == BundlePlatformTypeAndroid.String() {
 		platformType = BundlePlatformTypeAndroid
 	}
 
