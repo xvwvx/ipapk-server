@@ -20,6 +20,7 @@
                     </div>
                     <div class="weui-media-box__bd">
                         <p class="weui-media-box__desc">应用名: {{ .bundle.Name }}</p>
+                        <p class="weui-media-box__desc">包名: {{ .bundle.BundleId }}</p>
                         <p class="weui-media-box__desc">版本: {{ .bundle.Version }} ({{ .bundle.Build }})</p>
                         <p class="weui-media-box__desc">平台: {{ .bundle.PlatformType }}</p>
                         <p class="weui-media-box__desc">大小: {{.bundle.Size | formatBinary }}</p>
