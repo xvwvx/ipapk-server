@@ -77,6 +77,13 @@ type Bundle struct {
 	CreatedAt    time.Time
 }
 
+func GetList() ([]*Bundle, error) {
+	var bundles []*Bundle
+	err := orm.Group("bundle_id, platform_type").Find(&bundles).Error
+
+	return bundles, err
+}
+
 func AddBundle(bundle *Bundle) error {
 	return orm.Create(bundle).Error
 }

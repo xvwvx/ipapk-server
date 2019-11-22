@@ -119,6 +119,34 @@ func DelBundle(c *gin.Context) {
 	})
 }
 
+func GetList(c *gin.Context) {
+	builds, err := models.GetList()
+	if err != nil {
+		return
+	}
+
+	var bundles []serializers.BundleJSON
+	for _, v := range builds {
+		bundles = append(bundles, serializers.BundleJSON{
+			UUID:       v.UUID,
+			Name:       v.Name,
+			Platform:   v.PlatformType.String(),
+			BundleId:   v.BundleId,
+			Version:    v.Version,
+			Build:      v.Build,
+			InstallUrl: v.GetInstallUrl(conf.AppConfig.ProxyURL()),
+			QRCodeUrl:  conf.AppConfig.ProxyURL() + "/qrcode/" + v.UUID,
+			IconUrl:    conf.AppConfig.ProxyURL() + "/icon/" + v.UUID,
+			Changelog:  v.ChangeLog,
+			Downloads:  v.Downloads,
+		})
+	}
+
+	c.HTML(http.StatusOK, "list.html", gin.H{
+		"builds": bundles,
+	})
+}
+
 func GetQRCode(c *gin.Context) {
 	_uuid := c.Param("uuid")
 
