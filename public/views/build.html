@@ -22,12 +22,12 @@
                             <img src="{{ .IconUrl }}">
                         </div>
                         <div class="weui-cell__bd">
-                            <p>{{ .Name }}</p>
+                            <a href="/bundle/{{ .UUID }}">
+                                <p>{{ .Name }}</p>
+                            </a>
                         </div>
                         <div class="weui-cell__bd">
-                            <a href="/bundle/{{ .UUID }}">
-                                <p>{{ .Version }} ({{ .Build }})</p>
-                            </a>
+                            <p>{{ .Version }} ({{ .Build }})</p>
                         </div>
                         <div class="weui-cell__ft">
                             <a href="{{ .InstallUrl | safeURL }}" class="weui-btn weui-btn_mini weui-btn_primary">安装</a>
