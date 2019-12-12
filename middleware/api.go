@@ -38,7 +38,8 @@ func Upload(c *gin.Context) {
 	}
 
 	app, err := ipapk.NewAppParser(filename)
-	if err != nil {
+	if app == nil {
+		os.Remove(filename)
 		return
 	}
 
@@ -48,8 +49,10 @@ func Upload(c *gin.Context) {
 	}
 
 	iconBuffer := new(bytes.Buffer)
-	if err := png.Encode(iconBuffer, app.Icon); err != nil {
-		return
+	if app.Icon != nil {
+		if err := png.Encode(iconBuffer, app.Icon); err != nil {
+			return
+		}
 	}
 
 	bundle := new(models.Bundle)
