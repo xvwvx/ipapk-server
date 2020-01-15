@@ -79,7 +79,15 @@ type Bundle struct {
 
 func GetList() ([]*Bundle, error) {
 	var bundles []*Bundle
-	err := orm.Group("bundle_id, platform_type").Find(&bundles).Error
+
+	rows, err := orm.Raw("SELECT * FROM (SELECT * FROM bundles ORDER BY created_at DESC) GROUP BY bundle_id, platform_type").
+		Rows()
+	defer rows.Close()
+	for rows.Next() {
+		var bundle Bundle
+		orm.ScanRows(rows, &bundle)
+		bundles = append(bundles, &bundle)
+	}
 
 	return bundles, err
 }
