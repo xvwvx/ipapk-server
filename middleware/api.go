@@ -151,15 +151,18 @@ func GetList(c *gin.Context) {
 }
 
 func GetQRCode(c *gin.Context) {
-	_uuid := c.Param("uuid")
+	url := c.Query("url")
+	if url == "" {
+		uuid := c.Param("uuid")
+		bundle, err := models.GetBundleByUID(uuid)
+		if err != nil {
+			return
+		}
 
-	bundle, err := models.GetBundleByUID(_uuid)
-	if err != nil {
-		return
+		url = fmt.Sprintf("%v/bundle/%v?_t=%v", conf.AppConfig.ProxyURL(), bundle.UUID, time.Now().Unix())
 	}
 
-	data := fmt.Sprintf("%v/bundle/%v?_t=%v", conf.AppConfig.ProxyURL(), bundle.UUID, time.Now().Unix())
-	code, err := qr.Encode(data, qr.L, qr.Unicode)
+	code, err := qr.Encode(url, qr.L, qr.Unicode)
 	if err != nil {
 		return
 	}
@@ -212,7 +215,7 @@ func GetBundleId(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"bundle":     bundle,
 		"installUrl": bundle.GetInstallUrl(conf.AppConfig.ProxyURL()),
-		"qrCodeUrl":  conf.AppConfig.ProxyURL() + "/qrcode/" + bundle.UUID,
+		"qrCodeUrl":  conf.AppConfig.ProxyURL() + "/qrcode/" + bundle.UUID + "?url=" + conf.AppConfig.ProxyURL() + c.Request.RequestURI,
 		"iconUrl":    conf.AppConfig.ProxyURL() + "/icon/" + bundle.UUID,
 	})
 }
